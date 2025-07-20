@@ -1,0 +1,65 @@
+[
+  {
+    "group": "Food & Drink",
+    "items": [
+      { "id": "catering.restaurant", "label": "Restaurants" },
+      { "id": "catering.cafe", "label": "Cafés" },
+      { "id": "catering.fast_food", "label": "Fast Food" },
+      { "id": "catering.pub", "label": "Pubs" },
+      { "id": "catering.bar", "label": "Bars" }
+    ]
+  },
+  {
+    "group": "Attractions & Tourism",
+    "items": [
+      { "id": "tourism.attraction", "label": "Attractions" },
+      { "id": "tourism.sight", "label": "Sights" }
+    ]
+  },
+  {
+    "group": "Accommodation",
+    "items": [
+      { "id": "accommodation.hotel", "label": "Hotels" },
+      { "id": "accommodation.motel", "label": "Motels" },
+      { "id": "accommodation.guest_house", "label": "Guest Houses" },
+      { "id": "accommodation.hostel", "label": "Hostels" }
+    ]
+  },
+  {
+    "group": "Leisure & Recreation",
+    "items": [
+      { "id": "leisure.park", "label": "Parks" },
+      { "id": "leisure.playground", "label": "Playgrounds" },
+      { "id": "sport.sports_centre", "label": "Sports Centres" },
+      { "id": "sport.fitness_centre", "label": "Gyms" }
+    ]
+  },
+  {
+    "group": "Shopping",
+    "items": [
+      { "id": "commercial.supermarket", "label": "Supermarkets" },
+      { "id": "commercial.shopping_mall", "label": "Shopping Malls" },
+      { "id": "commercial.department_store", "label": "Department Stores" },
+      { "id": "commercial.food_and_drink.bakery", "label": "Bakeries" }
+    ]
+  },
+  {
+    "group": "Entertainment",
+    "items": [
+      { "id": "entertainment.cinema", "label": "Cinemas" },
+      { "id": "entertainment.culture.theatre", "label": "Theatres" },
+      { "id": "entertainment.museum", "label": "Museums" },
+      { "id": "entertainment.zoo", "label": "Zoos" },
+      { "id": "entertainment.theme_park", "label": "Theme Parks" }
+    ]
+  },
+  {
+    "group": "Transportation",
+    "items": [
+      { "id": "airport", "label": "Airports" },
+      { "id": "railway.train", "label": "Train Stations" },
+      { "id": "public_transport.bus", "label": "Bus Stations" },
+      { "id": "service.taxi", "label": "Taxi Stands" }
+    ]
+  }
+]
