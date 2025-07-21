@@ -8,15 +8,6 @@ const API_URL = "https://api.geoapify.com";
 function tripRoutes (db)  {
   const router = express.Router();
 
-  // Get all trips for the authenticated user
-  router.get("/", async (req, res) => {
-    let result = [];
-    if (req.isAuthenticated()) {
-      result = await db.query("SELECT * FROM trips WHERE user_id = $1", [req.user.id]);
-    }
-    res.json({ trips: result.rows, user: req.user });
-  });
-
   // Get single trip and first day's activities
   router.get("/:id", async (req, res) => {
     try {
