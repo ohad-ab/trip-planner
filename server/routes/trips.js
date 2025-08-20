@@ -64,6 +64,18 @@ function tripRoutes (db)  {
           const to = dayActs[i + 1];
           const key = `${from.lat},${from.lon}|${to.lat},${to.lon}`;
 
+          const lat1 = from.lat;
+          const lon1 = from.lon;
+          const lat2 = to.lat;
+          const lon2 = to.lon;
+
+          if (
+            !lat1 || !lon1 || !lat2 || !lon2 ||
+            isNaN(lat1) || isNaN(lon1) || isNaN(lat2) || isNaN(lon2)
+          ) {
+            // skip cache or API call, maybe return null or error
+            continue;
+          }
           if (routeCache.has(key)) {
             console.log("Cache HIT", key);
             dayEstimates.push(routeCache.get(key));
@@ -136,7 +148,9 @@ function tripRoutes (db)  {
   router.post("/update_activity", async (req, res) => {
     try {
       const { value, act_id, day_id, field } = req.body;
-      await db.query(`UPDATE trip_day_pois SET ${field}=$1::interval WHERE trip_day_id=$2 AND poi_id=$3`, [value, day_id, act_id]);
+      console.log()
+      const update = await db.query(`UPDATE trip_day_pois SET ${field}=$1::interval WHERE trip_day_id=$2 AND poi_id=$3`, [value, day_id, act_id]);
+      console.log(update)
       res.sendStatus(200);
     } catch (error) {
       console.error(error.message);

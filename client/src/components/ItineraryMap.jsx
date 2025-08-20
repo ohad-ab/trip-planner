@@ -9,26 +9,28 @@ import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
  * @returns JSX element or null if no POIs.
  */
 function ItineraryMap({ poiList }) {
-  // Return nothing if poiList is empty or undefined
-  if (!poiList || poiList.length === 0) return null;
+  // Filter POIs that have valid coordinates
+  const validPois = poiList?.filter(poi => poi.lat != null && poi.lon != null);
+
+  // Return null if no POIs with coordinates
+  if (!validPois || validPois.length === 0) return null;
 
   // Helper component to update map center when poiList changes
   const SetMapCenter = () => {
     const map = useMap();
 
     useEffect(() => {
-      // Center the map on the first POI's coordinates
-      if (poiList[0]?.lat && poiList[0]?.lon) {
-        map.setView([poiList[0].lat, poiList[0].lon]);
+      if (validPois[0]) {
+        map.setView([validPois[0].lat, validPois[0].lon]);
       }
-    }, [poiList, map]);
+    }, [validPois, map]);
 
     return null;
   };
 
   return (
     <MapContainer
-      center={[poiList[0].lat, poiList[0].lon]}
+      center={[validPois[0].lat, validPois[0].lon]}
       zoom={13}
       scrollWheelZoom={false}
       style={{ height: "400px", width: "50%" }}
@@ -38,7 +40,7 @@ function ItineraryMap({ poiList }) {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
-      {poiList.map(
+      {validPois.map(
         (poi) =>
           poi.lat &&
           poi.lon && (

@@ -32,6 +32,7 @@ function TripEditor({ id }) {
   const [poiClickId, setPoiClickId] = useState();
   const [durationEditVal, setDurationeditVal] = useState("");
   const [editActId, setEditActId] = useState();
+  const [actNameInput, setActNameInput] = useState("");
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
 
@@ -68,7 +69,7 @@ function TripEditor({ id }) {
  * @param {Event} e - Form click or submit event
  * @param {Object} poi - POI details from search result
  */
-  const handleSave = (e, poi) => {
+  const handleSavePOI = (e, poi) => {
     axios
       .post(
         `${port}/poi`,
@@ -89,6 +90,27 @@ function TripEditor({ id }) {
         }
       });
   };
+
+  function handleSaveAct(e){
+    e.preventDefault();
+    
+    axios
+      .post(
+        `${port}/poi`,
+        {
+          name: actNameInput,
+          day: dayID,
+        },
+        { withCredentials: true }
+      )
+      .then((response) => {
+        if (response.status === 200) {
+          setActNameInput("");
+          fetchActivities();
+        }
+      });
+
+  }
 
   function addSubDay(sign) {
     const newDay = new Date(date);
@@ -226,6 +248,11 @@ function TripEditor({ id }) {
         ))}
       </select>
       <button onClick={handleSearch}>Search</button>
+      <form>
+        Add Activity:
+        <input placeholder="Name" value={actNameInput} onChange={(e)=>setActNameInput(e.target.value)}></input>
+        <button onClick={(e)=>handleSaveAct(e)}>Save</button>
+      </form>
 
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={activities} strategy={verticalListSortingStrategy}>
@@ -242,7 +269,7 @@ function TripEditor({ id }) {
                     }}
                   >
                     <input
-                      placeholder={act.duration?.minutes}
+                      placeholder={`${act.duration?.hours || 0}:${act.duration?.minutes || 0}`}
                       value={editActId === act.id ? durationEditVal : ""}
                       onClick={() => setEditActId(act.id)}
                       onChange={(e) => setDurationeditVal(e.target.value)}
@@ -278,7 +305,7 @@ function TripEditor({ id }) {
           <ul>
             {poiList.length > 0 && <button onClick={() => setPoiList([])}>Close Results</button>}
             {poiList.map((val) => (
-              <li style={{ cursor: "pointer" }} onClick={(e) => handleSave(e, val.properties)} key={val.properties.place_id || val.properties.name}>
+              <li style={{ cursor: "pointer" }} onClick={(e) => handleSavePOI(e, val.properties)} key={val.properties.place_id || val.properties.name}>
                 {val.properties?.name_international?.en || val.properties.name} {val.properties.city}
               </li>
             ))}

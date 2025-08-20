@@ -6,7 +6,12 @@ function poiRoutes(db) {
  // Add a new POI and link it to a trip day
 router.post("/", async (req, res) => {
   try {
-    const { name, lat, lon, cat, day } = req.body;
+    const { name, lat = null, lon = null, cat, day } = req.body;
+
+    if (!name || !day) {
+      return res.status(400).json({ error: "Name and day are required" });
+    }
+    
     // Insert new POI
     const result = await db.query(
       "INSERT INTO pois(name, lat, lon, kind) VALUES ($1, $2, $3, $4) RETURNING id",

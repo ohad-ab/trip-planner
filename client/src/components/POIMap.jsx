@@ -24,7 +24,7 @@ import { port } from '../../config';
 const POIMap = ({ poiList, results, resCenter, day, fetchActivities, poiClickId, setPoiClickId, readOnly }) => {
   const apiKey = import.meta.env.VITE_GEOAPIFY_API_KEY;
 
-  const defaultCenter = poiList.length
+  const defaultCenter = poiList.length && poiList[0].lat != null && poiList[0].lon != null
     ? [poiList[0].lat, poiList[0].lon]
     : [48.8566, 2.3522]; // Paris fallback
 
@@ -237,7 +237,7 @@ const POIMap = ({ poiList, results, resCenter, day, fetchActivities, poiClickId,
           onClick={(coords) => {
             if (poiClickId != null) {
               setPoiClickId(null);
-            } else if (!marker) {
+            } else if (!marker & coords.lat != null && coords.lng != null) {
               setCenter(coords);
               setShouldRecenter(false);
               setMarker(coords);
@@ -252,7 +252,7 @@ const POIMap = ({ poiList, results, resCenter, day, fetchActivities, poiClickId,
         {marker && <AutoOpenMarker position={marker} />}
 
         {poiList.map((poi) => (
-          <PoiMarker
+          poi.lat != null && poi.lon != null ?<PoiMarker
             key={poi.id}
             poi={poi}
             poiClickId={poiClickId}
@@ -261,7 +261,7 @@ const POIMap = ({ poiList, results, resCenter, day, fetchActivities, poiClickId,
               setMarker(null);
               setMarkerDetails(null);
             }}
-          />
+          /> : null
         ))}
 
         {results?.map((res, i) => (
