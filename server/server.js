@@ -17,19 +17,24 @@ import poiRoutes from "./routes/pois.js";
 import searchRoutes from "./routes/search.js";
 
 // Initialize app and environment
-const app = express();
-dotenv.config();
+export const app = express();
+if (process.env.NODE_ENV === "test") {
+  dotenv.config({ path: ".env.test" });
+} else {
+  dotenv.config();
+}
 const port = process.env.PORT || 5000;
 
 // Database client setup
-const db = new pg.Client({
+export const db = new pg.Client({
   user: process.env.PG_USER,
   host: process.env.PG_HOST,
   database: process.env.PG_DATABASE,
   password: process.env.PG_PASSWORD,
   port: process.env.PG_PORT,
 });
-db.connect();
+
+  db.connect();
 
 // Session store configuration
 const PgSession = connectPgSimple(session);
@@ -50,9 +55,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Passport local strategy for authentication
-passport.use(
-  new LocalStrategy(async (username, password, done) => {
+export async function verifyUser (username, password, done) {
     try {
       const result = await db.query("SELECT * FROM users WHERE email = $1", [username]);
       if (!result.rows.length) return done(null, false, { message: "User not found" });
@@ -66,8 +69,9 @@ passport.use(
     } catch (err) {
       return done(err);
     }
-  })
-);
+  }
+// Passport local strategy for authentication
+passport.use(new LocalStrategy(verifyUser));
 passport.serializeUser((user, cb) => cb(null, user));
 passport.deserializeUser((user, cb) => cb(null, user));
 
@@ -78,4 +82,6 @@ app.use("/poi", poiRoutes(db));
 app.use("/search", searchRoutes(db));
 
 // Start server
-app.listen(port, () => console.log(`Server listening on port ${port}`));
+if (process.env.NODE_ENV !== "test") {
+  app.listen(port, () => console.log(`Server listening on port ${port}`));
+}

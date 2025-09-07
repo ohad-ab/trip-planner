@@ -2,7 +2,7 @@ import express from "express";
 import axios from "axios";
 import NodeCache from "node-cache";
 
-const routeCache = new NodeCache({ stdTTL: 3600, checkperiod: 600 }); // Cache expires in 1 hour
+export const routeCache = new NodeCache({ stdTTL: 3600, checkperiod: 600 }); // Cache expires in 1 hour
 const API_URL = "https://api.geoapify.com";
 
 function tripRoutes (db)  {
@@ -25,7 +25,7 @@ function tripRoutes (db)  {
       res.json({ trip: trip.rows[0], day: day.rows[0].id, activities: activities.rows });
     } catch (error) {
       console.error("Database error:", error.message);
-      res.status(504);
+      res.status(504).json({ error: "Database error" });;
     }
   });
 
@@ -41,6 +41,9 @@ function tripRoutes (db)  {
          ORDER BY td.day_number ASC, tdp.position ASC`,
         [req.params.id]
       );
+      if (acts.rows.length === 0) {
+        return res.json({ actsPerDay: [], routeEstimates: [] });
+      }
 
       // Group activities per day
       const actsPerDay = acts.rows.reduce((acc, act) => {
@@ -80,7 +83,6 @@ function tripRoutes (db)  {
             console.log("Cache HIT", key);
             dayEstimates.push(routeCache.get(key));
           } else {
-            console.log("Fetching from API", key);
             const response = await axios.get(`${API_URL}/v1/routing`, {
               params: {
                 waypoints: key,
@@ -131,7 +133,7 @@ function tripRoutes (db)  {
       res.json({ day: day.rows[0].id, activities: activities.rows });
     } catch (error) {
       console.error("Database error:", error.message);
-      res.status(504);
+      res.status(504).json({ error: "Database error" });
     }
   });
 
@@ -160,6 +162,7 @@ function tripRoutes (db)  {
 
   // Add a new trip with auto-created days
   router.post("/add_trip", async (req, res) => {
+
     const { title, startDate, endDate } = req.body;
     try {
       const result = await db.query(

@@ -2,19 +2,27 @@ import express from "express";
 import bcrypt from "bcrypt";
 import passport from "passport";
 
-const router = express.Router();
 
 /**
  * Auth-related routes: /, /login, /logout, /register
  * @param {pg.Client} db - The connected PostgreSQL client
  */
 function authRoutes(db) {
+  const router = express.Router();
+
   // Get current user and their trips
   router.get("/", async (req, res) => {
     let result = [];
+    // console.log(req.isAuthenticated())
     if (req.isAuthenticated()) {
-      result = await db.query("SELECT * FROM trips WHERE user_id = $1", [req.user.id]);
+      try {
+        result = await db.query("SELECT * FROM trips WHERE user_id = $1", [req.user.id]);
+      } catch (error) {
+        console.error("db query failed", error);
+        res.sendStatus(500);
+      }
     }
+
     res.json({ trips: result.rows, user: req.user });
   });
 
