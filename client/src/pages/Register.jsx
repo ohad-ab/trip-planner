@@ -17,7 +17,7 @@ function Register() {
 
   useEffect(() => {
     // Check if user is already logged in
-    axios(port, { withCredentials: true }).then((response) => {
+    axios.get(port, { withCredentials: true }).then((response) => {
       if (response.data.user) {
         navigate('/');
       } else {
@@ -27,6 +27,7 @@ function Register() {
   }, [navigate]);
 
   function handleSubmit(e) {
+    console.log(password, repeatPassword);
     e.preventDefault();
 
     // Password match validation
@@ -75,14 +76,14 @@ function Register() {
           type="password"
           placeholder="Password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) => {console.log("test password ",e.target.value); setPassword(e.target.value)}}
           required
         />
         <input
           type="password"
           placeholder="Repeat Password"
           value={repeatPassword}
-          onChange={(e) => setRepeatPassword(e.target.value)}
+          onChange={(e) => {  console.log("test repeat password ",e.target.value); setRepeatPassword(e.target.value)}}
           required
         />
         <button type="submit">Submit</button>

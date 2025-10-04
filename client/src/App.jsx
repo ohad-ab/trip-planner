@@ -26,6 +26,7 @@ function App() {
         } else {
           // Redirect non-logged in users to login unless on register page
           if (location.pathname !== '/register') {
+            console.log('User not authenticated, redirecting to login');
             navigate('/login');
           }
         }

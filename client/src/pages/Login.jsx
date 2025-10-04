@@ -16,10 +16,11 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  console.log("Rendering Login component, isAuth:", isAuth);
 
   // Check if user is already authenticated on component mount
   useEffect(() => {
-    axios(port, { withCredentials: true })
+    axios.get(port, { withCredentials: true })
       .then((response) => {
         if (response.data.user) {
           navigate('/'); // Redirect if already logged in
@@ -28,6 +29,7 @@ function Login() {
         }
       })
       .catch(() => {
+        console.log("Error checking auth status");
         setIsAuth(false); // In case of error, show login form
       });
   }, [navigate]);

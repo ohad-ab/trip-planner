@@ -43,7 +43,7 @@ export default function TripPage() {
     <>
       <h2>{title}</h2>
 
-      <button onClick={() => setView(view === "edit" ? "itinerary" : "edit")}>
+      <button className="switch-view" onClick={() => setView(view === "edit" ? "itinerary" : "edit")}>
         Switch to {view === "edit" ? "Itinerary" : "Editor"} View
       </button>
 
